@@ -1,0 +1,13 @@
+# Site settings
+title: WebGear
+email: rkaippully@gmail.com
+description: >-
+  WebGear is a library to build composable, type-safe HTTP APIs in Haskell.
+url: "https://haskell-webgear.github.io"
+github_username: haskell-webgear
+
+# Build settings
+markdown: kramdown
+remote_theme: chrisrhymes/bulma-clean-theme
+plugins:
+  - github-pages

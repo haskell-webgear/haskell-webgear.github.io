@@ -1,0 +1,14 @@
+{% assign menus = site.data.[page.menubar] %}
+
+<aside class="menu">
+{% for menu in menus %}
+    <p class="menu-label">{{ menu.label }}</p>
+    <ul class="menu-list">
+        {% for item in menu.items %}
+        <li>
+            <a href="{{ site.pages | where: 'path', item | map: 'url' }}" class="{% if item == page.path %}is-active{% endif %}">{{ site.pages | where: 'path', item | map: 'title' }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+</aside>

@@ -1,0 +1,36 @@
+{% if page.content-links %}
+  {% assign content-links=site.data.[page.content-links] %}
+  <section class="hero {% if content-links.height %} {{ content-links.height }} {% else %} is-medium {% endif %} {{ content-links.style }}">
+    <div class="hero-body">
+      <div class="container">
+        <div class="columns is-multiline is-centered">
+          {% for link in content-links.items %}
+          <div class="column is-3 has-text-centered">
+            <a href="{{ link.action_link | relative_url }}">
+              <div>
+                <p class="title is-5">{{ link.title }}</p>
+                {% if link.icon %}
+                <div class="icon callout-icon">
+                  {% if link.icon_brand %}
+                  <i class="fab {{ link.icon }} fa-4x"></i>
+                  {% else %}
+                  <i class="fas {{ link.icon }} fa-4x"></i>
+                  {% endif %}
+                </div>
+                {% endif %}
+                <p class="subtitle is-5">{{ link.subtitle }}</p>
+
+                {% if link.description %}
+                <div class="content">
+                  <p>{{ link.description | newline_to_br }}</p>
+                </div>
+                {% endif %}
+              </div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+{% endif %}
