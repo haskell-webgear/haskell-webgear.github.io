@@ -11,3 +11,5 @@ markdown: kramdown
 remote_theme: chrisrhymes/bulma-clean-theme
 plugins:
   - github-pages
+
+google_analytics: G-73BYKP5N0G
