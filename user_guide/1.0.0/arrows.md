@@ -7,11 +7,19 @@ menubar: user_guide_menu
 
 # Arrows Tutorial
 
-Arrows - like monads - are an abstraction to represent computations with a context. However, they can express contexts
-that are not possible with monads.
+Arrows - like monads - are an abstraction to represent computations with a context. The `Arrow` abstraction has
+these distinctive features which set it apart from both `Applicative` and `Monad`:
 
-WebGear makes extensive use of arrows to build APIs, hence it is important that you have a good grasp of them to
-effectively use WebGear.
+* Arrows can express contexts that are not possible with monads.
+* The composition of arrows builds up a graph of effectful computations.
+* It can can compose effectful computations in a statically-analysable way (like `Applicative` but unlike `Monad`)
+* It can compose effectful computations end-to-end, so that the output of one is the input of another (unlike
+  `Applicative` but like `Monad`)
+* Functions which return Arrows are effectful computations which distinguish "pure" inputs from "effectful" inputs.
+
+The combination of "statically-analysable effectful computation" and "explicit outputs **and inputs**" makes arrows
+a good fit for describing web routing, which is why WebGear makes extensive use of arrows to build APIs. It's
+important that you have a good grasp of them to effectively use WebGear.
 
 ## Basics
 
@@ -165,7 +173,8 @@ just like the monadic do notation.
 
 Secondly, the expression between `<-` and `-<` must be an arrow. This expression cannot use any of the variables bound
 in the proc notation. For example, the code below is invalid because the `x` is bound as a result in first line and is
-used as part of the arrow expression in second line.
+used as part of the arrow expression in second line. Attempting to write it would induce an `ArrowApply` constraint,
+which is equivalent in power to `Monad`.
 
 ```haskell
 proc a -> do
