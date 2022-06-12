@@ -59,6 +59,6 @@ WebGear uses [arrows](https://www.haskell.org/arrows/) and monads to build APIs,
 monads. This means there is one additional thing to learn if you are not familiar with arrows. However, in my opinion,
 this cost is justified as arrows can express API specifications at value level instead of type level. Arrows and their
 `proc` notation can be learned relatively easily as a natural extension of monadic computation. This guide includes an
-[arrow tutorial]({% link user_guide/1.0.0/arrows.md %}) to help you if you are unfamiliar with arrows.
+[arrow tutorial]({% link user_guide/1.0.2/arrows.md %}) to help you if you are unfamiliar with arrows.
 
 {% include prev-next.html %}

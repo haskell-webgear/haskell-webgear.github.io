@@ -125,4 +125,4 @@ define a type alias for the list of types - such as `[t1, t2, t3, ....]` - and u
 
 {% include prev-next.html %}
 
-[^1]: See the [arrows tutorial]({% link user_guide/1.0.0/arrows.md %})
+[^1]: See the [arrows tutorial]({% link user_guide/1.0.2/arrows.md %})

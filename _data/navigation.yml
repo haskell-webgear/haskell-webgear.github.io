@@ -1,7 +1,7 @@
 - name: Github
   link: https://github.com/haskell-webgear/webgear
 - name: Documentation
-  link: /user_guide/1.0.0/index.html
+  link: /user_guide/1.0.2/index.html
 - name: Packages
   link: /#
   dropdown:

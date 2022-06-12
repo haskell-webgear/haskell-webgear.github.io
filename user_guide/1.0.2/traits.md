@@ -151,5 +151,5 @@ mentioned in this chapter. These traits will be as first class as the WebGear tr
 
 {% include prev-next.html %}
 
-[^1]: See the DataKinds section in [Language Extensions]({% link user_guide/1.0.0/lang-exts.md %}) chapter.
-[^2]: See [arrows tutorial]({% link user_guide/1.0.0/arrows.md %})
+[^1]: See the DataKinds section in [Language Extensions]({% link user_guide/1.0.2/lang-exts.md %}) chapter.
+[^2]: See [arrows tutorial]({% link user_guide/1.0.2/arrows.md %})

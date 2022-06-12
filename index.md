@@ -3,7 +3,7 @@ layout: homepage
 title: WebGear
 subtitle: Composable, type-safe HTTP APIs in Haskell
 hero_link_text: Learn more
-hero_link: /user_guide/1.0.0/index.html
+hero_link: /user_guide/1.0.2/index.html
 callouts: callouts
 content-links: content-links
 ---
@@ -21,4 +21,4 @@ documentation and examples that shortens the learning curve.
 WebGear is very flexible, allowing you to build your project the way you want. It is very easy to extend or completely
 replace most of the components to make it work the way you need it to.
 
-Learn more about WebGear and how it compares against alternatives in the [user guide](/user_guide/1.0.0/index.html).
+Learn more about WebGear and how it compares against alternatives in the [user guide](/user_guide/1.0.2/index.html).

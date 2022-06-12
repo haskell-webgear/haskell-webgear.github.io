@@ -3,7 +3,7 @@ items:
   - title: User Guide
     subtitle: Read the manual
     icon: fa-book-open
-    action_link: /user_guide/1.0.0/index.html
+    action_link: /user_guide/1.0.2/index.html
   - title: Project Page
     subtitle: On Github
     icon: fa-github

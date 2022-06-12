@@ -12,7 +12,7 @@ Guide](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/index.htm
 
 ## Arrows
 
-This extension enables the `proc` notation for arrows. The [arrows tutorial]({% link user_guide/1.0.0/arrows.md %})
+This extension enables the `proc` notation for arrows. The [arrows tutorial]({% link user_guide/1.0.2/arrows.md %})
 explains this notation in detail.
 
 ## DataKinds

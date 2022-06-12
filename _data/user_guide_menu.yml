@@ -1,21 +1,21 @@
 - label: First Steps
   items:
-    - user_guide/1.0.0/index.md
-    - user_guide/1.0.0/getting-started.md
-    - user_guide/1.0.0/hello-world.md
+    - user_guide/1.0.2/index.md
+    - user_guide/1.0.2/getting-started.md
+    - user_guide/1.0.2/hello-world.md
 - label: Architecture
   items:
-    - user_guide/1.0.0/traits.md
-    - user_guide/1.0.0/handlers.md
-    - user_guide/1.0.0/middlewares.md
-    - user_guide/1.0.0/routing.md
+    - user_guide/1.0.2/traits.md
+    - user_guide/1.0.2/handlers.md
+    - user_guide/1.0.2/middlewares.md
+    - user_guide/1.0.2/routing.md
 - label: Common Tasks
   items:
-    - user_guide/1.0.0/request-traits.md
-    - user_guide/1.0.0/response-traits.md
-    - user_guide/1.0.0/authentication.md
+    - user_guide/1.0.2/request-traits.md
+    - user_guide/1.0.2/response-traits.md
+    - user_guide/1.0.2/authentication.md
 - label: Reference
   items:
-    - user_guide/1.0.0/arrows.md
-    - user_guide/1.0.0/lang-exts.md
-    - user_guide/1.0.0/troubleshooting.md
+    - user_guide/1.0.2/arrows.md
+    - user_guide/1.0.2/lang-exts.md
+    - user_guide/1.0.2/troubleshooting.md
