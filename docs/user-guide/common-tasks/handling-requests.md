@@ -1,10 +1,3 @@
----
-layout: page
-toc: true
-hide_hero: true
-menubar: user_guide_menu
----
-
 # Handling Requests
 
 We learned about the core architecture components in the previous chapters. Now, let us use them to extract information
@@ -107,5 +100,3 @@ myHandler =
 
 We covered a few common use cases above, but many others are supported by WebGear. See modules under `WebGear.Core.Trait`
 for details.
-
-{% include prev-next.html %}

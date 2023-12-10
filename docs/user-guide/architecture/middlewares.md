@@ -1,13 +1,6 @@
----
-layout: page
-toc: true
-hide_hero: true
-menubar: user_guide_menu
----
-
 # Middlewares
 
-Middlewares are higher-order arrows that enhance handlers. They accept another handler as a function argument and
+Middlewares are higher-order functions that enhance handlers. They accept another handler as a function argument and
 produce a handler as the result.
 
 ## Request Middlewares
@@ -70,5 +63,3 @@ possible. For example, you can have a middleware that captures a [correlation
 ID](https://hilton.org.uk/blog/microservices-correlation-id), or generate a new one and inject it as a request
 trait. When the underlying handler returns a response, this middleware can add a response header with the correlation
 ID.
-
-{% include prev-next.html %}

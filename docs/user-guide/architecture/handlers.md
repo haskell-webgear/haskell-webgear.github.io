@@ -1,10 +1,3 @@
----
-layout: page
-toc: true
-hide_hero: true
-menubar: user_guide_menu
----
-
 # Handlers
 
 This chapter explains the architecture of WebGear handlers.
@@ -54,8 +47,12 @@ suited for anything like that.
 ## Handler Arrows
 
 The problem we face is that we need to maintain some static information about the handler that is independent of the
-function evaluation. WebGear uses arrows[^1] to solve this problem. They support some static parts in addition to the
+function evaluation. WebGear uses arrows (1) to solve this problem. They support some static parts in addition to the
 dynamic evaluation part.
+{ .annotate }
+
+
+1. See the [arrows tutorial](../reference/arrows-tutorial.md)
 
 Let us look at the hello world handler from the previous chapter again:
 
@@ -122,7 +119,3 @@ The `StdHandler` constraint declares that `myHandler` attempts the following:
 Using `StdHandler` requires less number of constraints than using `Get` and `Set` constraints for each trait. You might
 still end up with a single large constraint if the type level lists of traits are very long. In such cases, you can
 define a type alias for the list of types - such as `[t1, t2, t3, ....]` - and use the alias in the constraint.
-
-{% include prev-next.html %}
-
-[^1]: See the [arrows tutorial]({% link user_guide/1.0.2/arrows.md %})

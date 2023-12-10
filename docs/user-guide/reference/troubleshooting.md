@@ -56,4 +56,3 @@ In this case, you are missing a proof that a linked request has certain traits. 
    
    If you have many such handlers, use `HaveTraits [t1, t2, ....] req` instead where `t1`, `t2`, ... are traits.
 
-{% include prev-next.html %}

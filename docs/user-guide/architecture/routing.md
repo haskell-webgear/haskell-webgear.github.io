@@ -1,10 +1,3 @@
----
-layout: page
-toc: true
-hide_hero: true
-menubar: user_guide_menu
----
-
 # Routing
 
 So far we have been using a single handler. What if we have multiple API endpoints and corresponding handlers?
@@ -59,5 +52,3 @@ And `[match| GET /api/users/userId:Int |] User.get` translates to:
 ```haskell
 method GET $ path "/api/users" $ pathVar @"userId" @Int $ User.get
 ```
-
-{% include prev-next.html %}

@@ -1,10 +1,3 @@
----
-layout: page
-toc: true
-hide_hero: true
-menubar: user_guide_menu
----
-
 # Authentication
 
 WebGear has first class support for common authentication schemes and mechanisms to implement any custom authentication
@@ -87,5 +80,3 @@ WebGear supports custom authentication requirements if your application needs it
 3. Implement middlewares that `probe` for the newly defined trait.
 
 That's all! The middlewares are now ready for use in your handlers.
-
-{% include prev-next.html %}

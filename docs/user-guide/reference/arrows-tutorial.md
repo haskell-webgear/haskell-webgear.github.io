@@ -1,10 +1,3 @@
----
-layout: page
-toc: true
-hide_hero: true
-menubar: user_guide_menu
----
-
 # Arrows Tutorial
 
 Arrows - like monads - are an abstraction to represent computations with a context. However, they can express contexts
@@ -174,8 +167,12 @@ proc a -> do
   ....
 ```
 
-Arrows do not let you choose the next arrow to use based on some intermediate result from a previous arrow.[^1] Bound
+Arrows do not let you choose the next arrow to use based on some intermediate result from a previous arrow.(1) Bound
 variables such as `x` and `y` can only be used as an input to other arrows (i.e. on the right side of `-<`).
+{ .annotate }
+
+1. `ArrowApply` typeclass allows this. But such arrows are equivalent to monads and you are better off using monads in
+    that case.
 
 The proc notation also supports `if` and `case` in commands. These require an instance of `ArrowChoice`:
 
@@ -211,8 +208,3 @@ See these resources for more information about arrows:
 3. These two papers introduce arrows from first principles and are easy to read:
    * [Generalising Monads to Arrows](http://www.cse.chalmers.se/%7Erjmh/Papers/arrows.pdf)
    * [Programming with Arrows](http://www.cse.chalmers.se/%7Erjmh/afp-arrows.pdf)
-
-{% include prev-next.html %}
-
-[^1]: `ArrowApply` typeclass allows this. But such arrows are equivalent to monads and you are better off using monads
-    in that case.

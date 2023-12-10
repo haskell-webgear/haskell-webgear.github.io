@@ -1,0 +1,85 @@
+site_name: WebGear
+site_url: https://haskell-webgear.github.io/
+site_description: >-
+  WebGear is a library to build composable, type-safe HTTP APIs in Haskell.
+site_author: Raghu Kaippully
+copyright: © 2023 Raghu Kaippully
+
+repo_url: https://github.com/haskell-webgear/webgear
+
+theme:
+  name: material
+  favicon: images/favicon.png
+  icon:
+    annotation: material/arrow-right-circle-outline
+    repo: fontawesome/brands/github
+  features:
+    - content.code.annotate
+    - content.code.copy
+    - content.code.select
+    - navigation.footer
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.path
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - toc.follow
+    - toc.integrate
+  palette:
+    primary: teal
+    accent: indigo
+
+plugins:
+  - search
+  - mike
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra_css:
+  - https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/fontawesome.min.css
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/js/fontawesome.min.js
+
+extra:
+  version:
+    provider: mike
+    default: stable
+
+nav:
+  - Home: index.md
+  - 'User Guide':
+      - 'First Steps':
+          - Introduction: user-guide/first-steps/introduction.md
+          - 'Getting Started': user-guide/first-steps/getting-started.md
+          - 'Hello, World!': user-guide/first-steps/hello-world.md
+      - Architecture:
+          - Traits: user-guide/architecture/traits.md
+          - Handlers: user-guide/architecture/handlers.md
+          - Middlewares: user-guide/architecture/middlewares.md
+          - Routing: user-guide/architecture/routing.md
+      - 'Common Tasks':
+          - 'Handling Requests': user-guide/common-tasks/handling-requests.md
+          - 'Generating Responses': user-guide/common-tasks/generating-responses.md
+          - Authentication: user-guide/common-tasks/authentication.md
+      - Reference:
+          - 'Arrows Tutorial': user-guide/reference/arrows-tutorial.md
+          - 'Language Extensions': user-guide/reference/language-extensions.md
+          - Troubleshooting: user-guide/reference/troubleshooting.md
+  - Packages: packages.md

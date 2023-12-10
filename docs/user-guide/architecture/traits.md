@@ -1,10 +1,3 @@
----
-layout: page
-toc: true
-hide_hero: true
-menubar: user_guide_menu
----
-
 # Traits
 
 *Traits* are a fundamental concept in WebGear that enables type-safety in APIs and many other elements make use of it
@@ -62,7 +55,10 @@ body. `Absence (JSONBody b) Request` is `Text` because that is the type of error
 
 The next step is to link traits with values. We get a value of type `Linked '[JSONBody b] Request` if we link the
 `JSONBody b` type with `Request`. We can link more than one trait - e.g. `t1`, `t2`, `t3`, ... - in which case we'll
-have a value of type `Linked '[t1, t2, t3] Request`.[^1]
+have a value of type `Linked '[t1, t2, t3] Request`. (1)
+{ .annotate }
+
+1. See the DataKinds section in [Language Extensions](../reference/language-extensions.md#datakinds) chapter.
 
 But what does it mean to have a linked value? A link is a proof that the specified traits exist in the value. If you
 have a `Linked '[JSONBody b] Request` value, you have a guarantee that it contains a JSON formatted `b` value. You can
@@ -85,9 +81,12 @@ is done with the `probe` function.
 probe :: Get h t a => t -> h (Linked ts a) (Either (Absence t a) (Linked (t : ts) a))
 ```
 
-This function gives us an arrow[^2] that takes a linked value - `Linked ts a` - as input and returns another linked
+This function gives us an arrow (1) that takes a linked value - `Linked ts a` - as input and returns another linked
 value - `Linked (t:ts) a` - on success or an `Absence t a` value on failure to retrieve the `t` trait. The resultant
 linked value has the same list of traits as the original, except for the additional `t` trait.
+{ .annotate }
+
+1. See [arrows tutorial](../reference/arrows-tutorial.md)
 
 This means that we can chain many invocations of `probe` for many traits, accumulating all those traits in the `ts`
 type-level list. The final linked value is proven to have all those traits. And we can invoke `pick @t (from request)`
@@ -149,7 +148,3 @@ documentation for the body.
 In addition to the core traits provided by WebGear, you can have your own traits by implementing the typeclasses
 mentioned in this chapter. These traits will be as first class as the WebGear traits.
 
-{% include prev-next.html %}
-
-[^1]: See the DataKinds section in [Language Extensions]({% link user_guide/1.0.2/lang-exts.md %}) chapter.
-[^2]: See [arrows tutorial]({% link user_guide/1.0.2/arrows.md %})

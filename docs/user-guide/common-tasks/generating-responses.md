@@ -1,10 +1,3 @@
----
-layout: page
-toc: true
-hide_hero: true
-menubar: user_guide_menu
----
-
 # Generating Responses
 
 WebGear has a number of middlewares and functions to generate responses. We'll explore them in this chapter.
@@ -66,5 +59,3 @@ The `setHeader` middleware adds a header value to a response:
 ```haskell
 setHeader @"Cache-Control" @Text ok200 -< ("no-cache", ())
 ```
-
-{% include prev-next.html %}
