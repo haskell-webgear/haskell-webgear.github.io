@@ -20,23 +20,17 @@ Could not deduce (Get h (RequiredQueryParam "tag" Text) Request)
 This means that you have used a middleware (or some other function) that is probing for the specified trait (in this
 case `RequiredQueryParam "tag" Text`) but you have not added a constraint to the type signature of this function.
 
-You can fix this by adding the constraint mentioned in the error message to the type signature. But it is more likely
-that you already have a constraint of the form `StdHandler h m reqs resps` there. In that case, you can add the trait
-`RequiredQueryParam "tag" Text` to the `reqs` type list.
+You can fix this by adding the constraint mentioned in the error message to the type signature. You can also combine
+multiple `Get` constraints to a single `Gets` constraint.
 
 You might get a similar error for missing `Set` constraints:
 
 ```
-Could not deduce (Set h (JSONBody ErrorResponse) Response)
-     arising from a use of ‘queryParam’
+Could not deduce (Set h (Body JSON ErrorResponse) Response)
+     arising from a use of ‘respondA’
 ```
 
-In this case, you can add the `JSONBody ErrorResponse` trait to the `resps` type list. In other words, a constraint like
-this will resolve both these errors:
-
-```haskell
-StdHandler h m [RequiredQueryParam "tag" Text, ....] [JSONBody ErrorResponse, ....]
-```
+In this case, you can add the specified constraint to the handler.
 
 ## Missing Trait Proofs
 
@@ -45,7 +39,7 @@ Could not deduce (HasTrait (RequiredQueryParam "offset" Int) req)
      arising from a use of ‘from’
 ```
 
-In this case, you are missing a proof that a linked request has certain traits. There are a few possible fixes:
+In this case, you are missing a proof that a witnessed request has certain traits. There are a few possible fixes:
 
 1. Make sure that the specified trait is actually required by your handler and the type
    level literals such as "offset" are spelled correctly.

@@ -27,13 +27,13 @@ This lets us write types such as `QueryParam Required Strict "offset" Integer`. 
 `Strict` got promoted to a type, and the types `Existence` and `ParseStyle` got promoted to kinds. This also allows
 string literals such as `"offset"` as a type.
 
-This extension also allows using lists at the type level. For example, types such as `Linked [RequiredHeader
-"Content-Type" Text, JSONBody ErrorResponse] Response` is possible because of this extension.
+This extension also allows using lists at the type level. For example, types such as `Response ``With``
+[RequiredResponseHeader "Content-Type" Text, Body JSON ErrorResponse]` is possible because of this extension.
 
 ## TypeApplications
 
 WebGear uses this extension to explicitly mention values of type variables in some cases. For example, to extract a
-trait attribute from a linked request:
+trait attribute from a witnessed request:
 
 ```haskell
 let maybeAuthor :: Maybe Text

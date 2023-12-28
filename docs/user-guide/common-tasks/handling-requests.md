@@ -9,10 +9,11 @@ If you expect a query parameter in your handler, use the `queryParam` middleware
 
 ```haskell
 myHandler ::
-  StdHandler h m
-    '[RequiredQueryParam "limit" Integer]
-    [RequiredHeader "Content-Type" Text, Body String] =>
-  RequestHandler h req
+  ( StdHandler h m
+  , Get h (RequiredQueryParam "limit" Integer) Request
+  , Sets h [RequiredResponseHeader "Content-Type" Text, Body PlainText String] Response
+  ) =>
+  RequestHandler h ts
 myHandler =
   queryParam @"limit" @Integer errorHandler $
     proc request -> do
@@ -21,9 +22,11 @@ myHandler =
       ....
 
 errorHandler ::
-  StdHandler h m '[] [RequiredHeader "Content-Type" Text, Body String] =>
-  h (Linked req Request, Either ParamNotFound ParamParseError) Response
-errorHandler = proc (_, err) -> unlinkA <<< respondA HTTP.badRequest400 "text/plain" -< show err
+  ( StdHandler h m
+  , Sets h [RequiredResponseHeader "Content-Type" Text, Body PlainText String] Response
+  ) =>
+  h (Request `With` ts, Either ParamNotFound ParamParseError) Response
+errorHandler = proc (_, err) -> respondA HTTP.badRequest400 PlainText -< show err
 ```
 
 If the query parameter is missing or invalid, the `errorHandler` will be invoked to generate a response. There is also
@@ -42,13 +45,15 @@ instance FromHttpApiData ETag where
   ....
 
 myHandler ::
-  StdHandler h m '[RequiredHeader "If-Match" ETag] '[] =>
-  RequestHandler h req
+  ( StdHandler h m
+  , Get h (RequiredRequestHeader "If-Match" ETag) Request
+  ) =>
+  RequestHandler h ts
 myHandler =
   header @"If-Match" @ETag errorHandler $
     proc request -> do
       let etag :: ETag
-          etag = pick @(RequiredHeader "If-Match" ETag) $ from request
+          etag = pick @(RequiredRequestHeader "If-Match" ETag) $ from request
       ....
 ```
 
@@ -65,13 +70,15 @@ instance FromByteString PNGImage where
   ....
 
 myHandler ::
-  StdHandler h m '[Body PNGImage] '[] =>
-  RequestHandler h req
+  ( StdHandler h m
+  , Get h (Body OctetStream PNGImage) Request
+  ) =>
+  RequestHandler h ts
 myHandler =
-  requestBody @PNGImage (Just "image/png") errorHandler $
+  requestBody @PNGImage OctetStream errorHandler $
     proc request -> do
       let img :: PNGImage
-          img = pick @(Body PNGImage) $ from request
+          img = pick @(Body OctetStream PNGImage) $ from request
       ....
 ```
 
@@ -86,13 +93,15 @@ instance FromJSON Person where
   ....
 
 myHandler ::
-  StdHandler h m '[JSONBody Person] '[] =>
-  RequestHandler h req
+  ( StdHandler h m
+  , Get h (Body JSON Person) Request
+  ) =>
+  RequestHandler h ts
 myHandler =
-  jsonRequestBody @Person errorHandler $
+  requestBody @Person JSON errorHandler $
     proc request -> do
       let person :: Person
-          person = pick @(JSONBody Person) $ from request
+          person = pick @(Body JSON Person) $ from request
       ....
 ```
 

@@ -25,7 +25,7 @@ type-level programming and is easier to learn.
   functions in them because they are values.
 * Servant is a very popular project with a large ecosystem of companion packages. WebGear is a younger project, and may
   not support such a wide variety of functionality.
-  
+
 ### IHP
 IHP is an opinionated full-stack framework for rapid application development. You can build everything from the DB
 schema to UI with IHP. It can significantly reduce the development time by using standardized steps to build various

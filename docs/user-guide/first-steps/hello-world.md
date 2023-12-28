@@ -2,8 +2,7 @@
 
 ## First Application
 
-Let us build our first application with WebGear. To achieve this goal, you need to create a new project with three files
-as shown below.
+Let us build our first application with WebGear. Create a new project with three files as shown below.
 
 === "Main.hs"
     ```haskell
@@ -17,13 +16,12 @@ as shown below.
     import WebGear.Server
     
     main :: IO ()
-    main = Warp.run 3000 (toApplication helloHandler)
-      where
-        helloHandler =
-          method HTTP.GET $
-            path "/api/hello" $
-              proc request -> do
-                unlinkA <<< respondA HTTP.ok200 "text/plain" -< "Hello, World!" :: Text
+    main =
+      Warp.run 3000 $ toApplication $
+        method HTTP.GET $
+          path "/api/hello" $
+            proc request ->
+              respondA HTTP.ok200 PlainText -< "Hello, World!" :: Text
     ```
 
 === "hello.cabal"
@@ -34,17 +32,17 @@ as shown below.
     
     executable hello
         main-is:          Main.hs
-        build-depends:    base >=4.13.0.0 && <4.17
-                        , http-types ==0.12.3
+        build-depends:    base >=4.13.0.0 && <4.19
+                        , http-types ==0.12.*
                         , warp ==3.3.*
-                        , webgear-core ==1.0.5
-                        , webgear-server ==1.0.5
+                        , webgear-core ==1.1.0
+                        , webgear-server ==1.1.0
         default-language: Haskell2010
     ```
 
 === "stack.yaml"
     ```yaml
-    resolver: nightly-2022-06-06
+    resolver: nightly-2023-12-25
     allow-newer: true
     ```
 
@@ -65,7 +63,7 @@ Here is an explanation of how the above code works:
 3. The `proc` notation is special syntax introduced by arrows. You should read the arrows chapter if you are not
    familiar with it.
 4. Finally, `respondA` is used to send a `text/plain` response with a body.
-5. The `helloHandler` is converted to a [WAI application](https://github.com/yesodweb/wai) with the help of
-   `toApplication` and a Warp server is launched.
+5. The `toApplication` converts its argument to a [WAI application](https://hackage.haskell.org/package/wai). This
+   application is run as a [Warp](https://hackage.haskell.org/package/warp) server using `Warp.run`.
 
 We will see more details about all these in the upcoming chapters.

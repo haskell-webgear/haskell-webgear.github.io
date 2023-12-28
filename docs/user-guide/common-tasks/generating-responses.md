@@ -10,12 +10,10 @@ HTTP status 200:
 ```haskell
 import qualified Network.HTTP.Types as HTTP
 
-respondA HTTP.ok200 "text/plain" -< "A response body"
+respondA HTTP.ok200 PlainText -< "A response body" :: Text
 ```
 
-The `respondA` arrow generates a `Linked res Response`. You can compose it with `unlinkA` to convert it to a `Response`.
-
-For generating JSON responses, you can use `respondJsonA`:
+For generating JSON responses:
 
 ```haskell
 data Person = Person { name :: Text, email :: Text }
@@ -24,38 +22,33 @@ data Person = Person { name :: Text, email :: Text }
 let person :: Person
     person = Person "John Smith" "john@smith.com"
 
-unlinkA <<< respondJsonA HTTP.ok200 -< person
+respondA HTTP.ok200 JSON -< person
 ```
 
 ## Advanced Response Generation
 
-You can get finer control over the response using a few additional middlewares and arrows.
+You can get finer control over the response using a few additional control structures.
 
 The `mkResponse` arrow generates a response with a specific HTTP status code.
 
 ```haskell
--- resp :: Linked '[Status] Response
+-- resp :: Response `With` '[Status]
 resp <- mkResponse HTTP.ok200 -< ()
 ```
 
 There are helper arrows in the `WebGear.Core.Trait.Status` module that generates responses for all standard HTTP status
 codes.
 
-The `setBody` and `setJSONBody` middlewares can add a body to a response. For example:
+`setBody` can add a body to a response. For example:
 
 ```haskell
-setBody "text/plain" ok200 -< ("Hello, World!", ())
+(ok200 -< ())
+  >-> (\resp -> setBody PlainText -< (response, "Hello, World!" :: Text))
 ```
 
-```haskell
-let person :: Person
-    person = Person "John Smith" "john@smith.com"
-
-setJSONBody ok200 -< (person, ())
-```
-
-The `setHeader` middleware adds a header value to a response:
+`setHeader` adds a header value to a response:
 
 ```haskell
-setHeader @"Cache-Control" @Text ok200 -< ("no-cache", ())
+(ok200 -< ())
+  >-> (\resp -> setHeader @"Cache-Control" @Text -< (resp, "no-cache"))
 ```

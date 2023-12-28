@@ -27,3 +27,17 @@ The following packages are available on Hackage and Stackage.
 
     - [Hackage](https://hackage.haskell.org/package/webgear-openapi)
     - [Stackage](https://www.stackage.org/package/webgear-openapi)
+
+-   <b>webgear-swagger</b>:
+
+    This package can be used to generate Swagger 2.0 specifications from WebGear applications.
+
+    - [Hackage](https://hackage.haskell.org/package/webgear-swagger)
+    - [Stackage](https://www.stackage.org/package/webgear-swagger)
+
+-   <b>webgear-swagger-ui</b>:
+
+    This package provides an endpoint to launch swagger-ui to browse Swagger 2.0 / OpenAPI specifications.
+
+    - [Hackage](https://hackage.haskell.org/package/webgear-swagger-ui)
+    - [Stackage](https://www.stackage.org/package/webgear-swagger-ui)

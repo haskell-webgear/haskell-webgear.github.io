@@ -63,23 +63,23 @@ extra:
     default: stable
 
 nav:
-  - Home: index.md
+  - 'Home': index.md
   - 'User Guide':
       - 'First Steps':
-          - Introduction: user-guide/first-steps/introduction.md
+          - 'Introduction': user-guide/first-steps/introduction.md
           - 'Getting Started': user-guide/first-steps/getting-started.md
           - 'Hello, World!': user-guide/first-steps/hello-world.md
-      - Architecture:
-          - Traits: user-guide/architecture/traits.md
-          - Handlers: user-guide/architecture/handlers.md
-          - Middlewares: user-guide/architecture/middlewares.md
-          - Routing: user-guide/architecture/routing.md
+      - 'Architecture':
+          - 'Traits': user-guide/architecture/traits.md
+          - 'Handlers': user-guide/architecture/handlers.md
+          - 'Middlewares': user-guide/architecture/middlewares.md
+          - 'Routing': user-guide/architecture/routing.md
       - 'Common Tasks':
           - 'Handling Requests': user-guide/common-tasks/handling-requests.md
           - 'Generating Responses': user-guide/common-tasks/generating-responses.md
-          - Authentication: user-guide/common-tasks/authentication.md
-      - Reference:
+          - 'Authentication': user-guide/common-tasks/authentication.md
+      - 'Reference':
           - 'Arrows Tutorial': user-guide/reference/arrows-tutorial.md
           - 'Language Extensions': user-guide/reference/language-extensions.md
-          - Troubleshooting: user-guide/reference/troubleshooting.md
+          - 'Troubleshooting': user-guide/reference/troubleshooting.md
   - Packages: packages.md

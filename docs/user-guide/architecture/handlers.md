@@ -39,8 +39,8 @@ handler = extractQueryParam >=> retrieveDataFromDB >=> makeResponse
 ```
 
 However, there is one drawback to this representation. The only thing you can do with this function is to evaluate it by
-supplying a request. What if we want to get the name of the query parameter used or the HTTP status code of the response
-*without* running/evaluating the handler? This kind of information is useful to generate documentation about the
+supplying a request. What if we want to get the name of the query parameter used or the expected HTTP status code of the
+response *without* executing the handler? This kind of information is useful to generate documentation about the
 handler, automatically build a client program for the API etc. Unfortunately, the monadic function representation is not
 suited for anything like that.
 
@@ -58,12 +58,12 @@ Let us look at the hello world handler from the previous chapter again:
 
 ```haskell
 proc request ->
-  unlinkA <<< respondA HTTP.ok200 "text/plain" -< "Hello, World!" :: Text
+  respondA HTTP.ok200 PlainText -< "Hello, World!" :: Text
 ```
 
 Here, `"Hello, World!"` is to the right of `-<`; it is an input to the arrow. Values passed as input to arrows are known
-only while evaluating the handler with a request. On the other hand, `HTTP.ok200` and `"text/plain"` are to the left of
-`-<`. Hence, they are known even without evaluating the handler.
+only while evaluating the handler with a request. On the other hand, `HTTP.ok200` and `PlainText` are to the left of
+`-<` and are used to construct the arrow. Hence, they are known even without evaluating the handler.
 
 This separation of static and dynamic parts of the API enables WebGear to extract static information from handlers
 without "executing" them. For example, `webgear-openapi` generates OpenAPI documentation from handlers while
@@ -82,8 +82,8 @@ Here, `h a b` is an arrow whose input is of type `a` and output is of type `b`. 
 `a -> m b`. An arrow of type `Handler h => h Request Response` will be able to handle HTTP requests and produce a
 response.
 
-Every handler has an underlying monad `m` in which the handler executes. You can lift a monadic computation to an arrow
-with the `arrM` function.
+Every handler has an underlying monad `m` in which the handler executes. You can lift a monadic computation to a handler
+using the `arrM` function.
 
 A handler is an instance of `ArrowChoice`. Thus, we can use conditionals - `if` and `case` expressions - in handler
 implementations. A handler also has an instance of `ArrowPlus`. This is used to implement routing - choosing one handler
@@ -99,23 +99,22 @@ traits:
 
 ```haskell
 myHandler ::
-  ( HaveTraits [q1, q2, q3, ....] req
-  , StdHandler h m [t1, t2, t3, ....] [s1, s2, s3, ....]
+  ( StdHandler h m
+  , HaveTraits [q1, q2, q3, ....] ts
+  , Gets h [t1, t2, t3, ....] Request
+  , Sets h [s1, s2, s3, ....] Response
   ) =>
-  RequestHandler h req
+  RequestHandler h ts
 myHandler = proc request -> do
   ....
 ```
 
-The `HaveTraits` constraint requires that the input request has all the traits `q1`, `q2`, `q3`, etc. linked with
+The `HaveTraits` constraint requires that the input request has all the traits `q1`, `q2`, `q3`, etc. witnessed by
 it. Typically, this is achieved by wrapping `myHandler` with some middlewares that probe for these traits. You will
 learn about middlewares in the next chapter.
 
-The `StdHandler` constraint declares that `myHandler` attempts the following:
+The `Gets` constraint declares that `myHandler` attempts to get the traits `t1`, `t2`, `t3`, etc. from the request using
+`probe` function.  The `Sets` constraint declared that `myHandler` attempts to set the traits `s1`, `s2`, `s3`, etc. on
+the response using `plant` function.
 
-* Get the traits `t1`, `t2`, `t3`, etc. from the request using `probe` function.
-* Set the traits `s1`, `s2`, `s3`, etc. on the response using `plant` function.
-
-Using `StdHandler` requires less number of constraints than using `Get` and `Set` constraints for each trait. You might
-still end up with a single large constraint if the type level lists of traits are very long. In such cases, you can
-define a type alias for the list of types - such as `[t1, t2, t3, ....]` - and use the alias in the constraint.
+The `StdHandler` is a shortcut to add a few common constraints which is typically used by all handlers.

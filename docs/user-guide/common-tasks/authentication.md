@@ -15,20 +15,26 @@ Typical usage of basic authentication is:
 type UserAuth = BasicAuth IO Text Username
 
 helloHandler ::
-  StdHandler h IO '[UserAuth] [RequiredHeader "Content-Type" Text, Body String] =>
+  ( StdHandler h IO,
+  , Get h UserAuth Request
+  , Sets h [RequiredResponseHeader "Content-Type" Text, Body PlainText String] Response
+  ) =>
   RequestHandler h '[]
 helloHandler =
   basicAuth authConfig authFail $
     proc request -> do
       let username = pick @UserAuth $ from request
           msg = "Hello, " <> show username <> "!"
-      unlinkA <<< respondA HTTP.ok200 "text/plain" -< msg
+      respondA HTTP.ok200 PlainText -< msg
 
+-- Send a response when authentication fails
 authFail ::
-  StdHandler h IO '[] [RequiredHeader "Content-Type" Text, Body String] =>
-  h (Linked req Request, BasicAuthError Text) Response
+  ( StdHandler h IO
+  , Sets h [RequiredResponseHeader "Content-Type" Text, Body PlainText String] Response
+  ) =>
+  h (Request `With` ts, BasicAuthError Text) Response
 authFail = proc (_request, err) ->
-  unlinkA <<< respondA HTTP.forbidden403 "text/plain" -< show err
+  respondA HTTP.forbidden403 PlainText -< show err
 
 -- This is where you validate the credentials
 authConfig :: UserAuth
@@ -50,14 +56,17 @@ JWT authentication with a bearer token is similar to basic authentication:
 type UserAuth = JWTAuth IO Text Username
 
 helloHandler ::
-  StdHandler h IO '[UserAuth] [RequiredHeader "Content-Type" Text, Body String] =>
+  ( StdHandler h IO
+  , Get h UserAuth Request
+  , Sets h [RequiredResponseHeader "Content-Type" Text, Body PlainText String] Response
+  ) =>
   RequestHandler h '[]
 helloHandler =
   jwtAuth authConfig authFail $
     proc request -> do
       let username = pick @UserAuth $ from request
           msg = "Hello, " <> show username <> "!"
-      unlinkA <<< respondA HTTP.ok200 "text/plain" -< msg
+      respondA HTTP.ok200 PlainText -< msg
 
 -- Configuration to validate JWT
 authConfig :: UserAuth
