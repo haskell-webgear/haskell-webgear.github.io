@@ -1,0 +1,1115 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="WebGear is a library to build composable, type-safe HTTP APIs in Haskell.">
+      
+      
+        <meta name="author" content="Raghu Kaippully">
+      
+      
+        <link rel="canonical" href="https://haskell-webgear.github.io/1.3/tutorial/advanced/arrows-primer/">
+      
+      
+        <link rel="prev" href="../../request-handling/api-documentation/">
+      
+      
+        <link rel="next" href="../traits/">
+      
+      
+      <link rel="icon" href="../../../images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.18">
+    
+    
+      
+        <title>Arrows Primer - WebGear</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.66ac8b77.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+  
+  
+  
+  
+  <style>:root{--md-annotation-icon:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 13v-2h8l-3.5-3.5 1.42-1.42L17.84 12l-5.92 5.92-1.42-1.42L14 13H6m16-1a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10m-2 0a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8Z"/></svg>');}</style>
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/fontawesome.min.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#arrows-primer" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="WebGear" class="md-header__button md-logo" aria-label="WebGear" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            WebGear
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Arrows Primer
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/haskell-webgear/webgear" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../first-steps/introduction/" class="md-tabs__link">
+          
+  
+  Tutorial
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../packages/" class="md-tabs__link">
+        
+  
+    
+  
+  Packages
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="WebGear" class="md-nav__button md-logo" aria-label="WebGear" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    WebGear
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/haskell-webgear/webgear" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Tutorial
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorial
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    First Steps
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            First Steps
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../first-steps/introduction/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../first-steps/getting-started/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Request Handling
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Request Handling
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../request-handling/routing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Routing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../request-handling/handlers-and-middlewares/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Handlers and Middlewares
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../request-handling/request-traits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Request Traits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../request-handling/generating-responses/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Generating Responses
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../request-handling/api-documentation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API Documentation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Advanced
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Arrows Primer
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Arrows Primer
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#basics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conditionals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conditionals
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monoid-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Monoid Operations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-proc-notation" class="md-nav__link">
+    <span class="md-ellipsis">
+      The proc Notation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../traits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Traits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../packages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Packages
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="arrows-primer">Arrows Primer</h1>
+<p>Arrows - like monads - are an abstraction to represent computations with a context. However, they can express contexts
+that are not possible with monads.</p>
+<p>WebGear makes extensive use of arrows to build APIs, hence it is important that you have a good grasp of them to
+effectively use WebGear.</p>
+<h2 id="basics">Basics</h2>
+<p>Intuitively, arrows are similar to functions. Like functions, arrows have kind <code class="language-hs highlight"><span class="kt">Type</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Type</span></code>. That is,
+they take an input and an output type arguments. Throughout this chapter, we'll use the type variable <code class="language-hs highlight"><span class="nf">h</span></code> to
+indicate an arrow. Hence, <code class="language-hs highlight"><span class="nf">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span></code> is an arrow with <code class="language-hs highlight"><span class="nf">a</span></code> as the input type and <code class="language-hs highlight"><span class="nf">b</span></code> as the output type.</p>
+<p>One significant similarity of arrows and functions is that both are composable. Arrows have
+<a href="https://hackage.haskell.org/package/base-4.16.0.0/docs/Control-Category.html#t:Category">Category</a> as a
+superclass. Category is defined as:</p>
+<div class="language-haskell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kr">class</span><span class="w"> </span><span class="kt">Category</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="kr">where</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="n">id</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">a</span><span class="w">                         </span><span class="c1">-- The identity arrow</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="p">(</span><span class="o">.</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">c</span><span class="w">  </span><span class="c1">-- Associative composition</span>
+</span></code></pre></div>
+<p>You are probably already familiar with <code class="language-hs highlight"><span class="nf">id</span></code> and <code class="language-hs highlight"><span class="p">(</span><span class="o">.</span><span class="p">)</span></code> as identity function and function composition. <code class="language-hs highlight"><span class="kt">Category</span></code> is a generalization of these, it represents all types that can be composed like functions.</p>
+<p>There are two composition operators that make the direction of composition explicit:</p>
+<div class="language-haskell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">-- Right to left composition</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p">(</span><span class="o">&lt;&lt;&lt;</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Category</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">c</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1">-- Left to right composition</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">(</span><span class="o">&gt;&gt;&gt;</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Category</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">c</span>
+</span></code></pre></div>
+<p>The <code class="language-hs highlight"><span class="kt">Arrow</span></code> type class is defined as:</p>
+<div class="language-haskell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kr">class</span><span class="w"> </span><span class="kt">Category</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Arrow</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="kr">where</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="c1">-- convert a function to an arrow</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="n">arr</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="c1">-- map over the input type</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="n">first</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="c1">-- map over the output type</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="n">second</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="c1">--- combine two arrows</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">  </span><span class="p">(</span><span class="o">***</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">)</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">  </span><span class="p">(</span><span class="o">&amp;&amp;&amp;</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span>
+</span></code></pre></div>
+<p>These methods allow us to operate on multiple inputs and/or outputs represented as pairs in a single computation.</p>
+<p>Note that all operations you saw above manipulate and compose arrows in various ways to produce other arrows. But none
+of them allow you to "execute" an arrow - i.e. provide an input to an arrow and get an output. This is not part of the
+<code class="language-hs highlight"><span class="kt">Arrow</span></code> interface, but a specific arrow type might have such a mechanism.</p>
+<p>This is similar to the monad interface. The <code class="language-hs highlight"><span class="kt">Monad</span></code> type class defines a <code class="language-hs highlight"><span class="nf">return</span></code> method to lift a value into
+monadic context and <code class="language-hs highlight"><span class="o">&gt;&gt;=</span></code> to bind two monadic computations. But there is no method to extract a value from a
+monadic context. Specific monads (for e.g., <code class="language-hs highlight"><span class="kt">Maybe</span></code>, <code class="language-hs highlight"><span class="kt">Either</span></code>, etc.) might provide some mechanism to extract a
+value from a monad. But it is not possible with many other monads (for e.g., <code class="language-hs highlight"><span class="kt">IO</span></code>, <code class="language-hs highlight"><span class="kt">Const</span></code>, etc.).</p>
+<p>In WebGear, you would compose handler arrows to form a single handler. The <code class="language-hs highlight"><span class="kt">ServerHandler</span></code> type allows you to
+provide a <code class="language-hs highlight"><span class="kt">Request</span></code> as input to this arrow and get a <code class="language-hs highlight"><span class="kt">Response</span></code> as output. This is how <code>webgear-server</code>
+package implements its API servers. The <code class="language-hs highlight"><span class="kt">OpenApiHandler</span></code> from <code>webgear-openapi</code> package do not have any mechanisms
+to run a server. Instead, it can extract static information about the APIs to generate OpenAPI documentation.</p>
+<h2 id="conditionals">Conditionals</h2>
+<p>The <code class="language-hs highlight"><span class="kt">Arrow</span></code> type class is not expressive enough to build APIs. We often need to conditionally perform actions in a
+handler. This is where <code class="language-hs highlight"><span class="kt">ArrowChoice</span></code> type class comes in:</p>
+<div class="language-haskell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kr">class</span><span class="w"> </span><span class="kt">Arrow</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">ArrowChoice</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="kr">where</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="n">left</span><span class="w">  </span><span class="ow">::</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="p">(</span><span class="kt">Either</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">Either</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w">          </span><span class="c1">-- maps over left option</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="n">right</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="p">(</span><span class="kt">Either</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">Either</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w">          </span><span class="c1">-- maps over right option</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="p">(</span><span class="o">+++</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="p">(</span><span class="kt">Either</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">Either</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="n">d</span><span class="p">)</span><span class="w"> </span><span class="c1">-- maps over both left and right</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="p">(</span><span class="o">|||</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="p">(</span><span class="kt">Either</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="n">c</span><span class="w">            </span><span class="c1">-- (+++), then merge results</span>
+</span></code></pre></div>
+<p>These arrows operate on <code class="language-hs highlight"><span class="kt">Either</span></code> values and choose different arrows to handle <code class="language-hs highlight"><span class="kt">Left</span></code> and <code class="language-hs highlight"><span class="kt">Right</span></code> cases.</p>
+<p>In WebGear, <code class="language-hs highlight"><span class="kt">ArrowChoice</span></code> interface is used to generate different responses based on request traits. For example,
+if a handle requires a query parameter, we want to generate a 404 response when it is missing. Thus, we need two
+different handlers - one for the case where we have the query parameter in the request and another one where we
+don't. The <code class="language-hs highlight"><span class="o">|||</span></code> operator achieves this by producing an arrow that takes an <code class="language-hs highlight"><span class="kt">Either</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span></code> value as input and
+invoking one of the two handlers based on the input.</p>
+<h2 id="monoid-operations">Monoid Operations</h2>
+<p>There are cases where we want to combine multiple arrows to form a single arrow. Some arrows support this operation with
+<code class="language-hs highlight"><span class="kt">ArrowZero</span></code> and <code class="language-hs highlight"><span class="kt">ArrowPlus</span></code> type classes.</p>
+<div class="language-haskell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kr">class</span><span class="w"> </span><span class="kt">Arrow</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">ArrowZero</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="kr">where</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="n">zeroArrow</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="kr">class</span><span class="w"> </span><span class="kt">ArrowZero</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">ArrowPlus</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="kr">where</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="p">(</span><span class="o">&lt;+&gt;</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span>
+</span></code></pre></div>
+<p>Notice the similarity of these classes to <code class="language-hs highlight"><span class="kt">Semigroup</span></code> and <code class="language-hs highlight"><span class="kt">Monoid</span></code> respectively. They define an associative
+binary operation to combine two arrows and also a <code class="language-hs highlight"><span class="nf">zeroArrow</span></code> that acts as an identity for the <code class="language-hs highlight"><span class="o">&lt;+&gt;</span></code>
+operation. In other words, for any arrow <code class="language-hs highlight"><span class="nf">h</span></code>, you have <code class="language-hs highlight"><span class="nf">h</span><span class="w"> </span><span class="o">&lt;+&gt;</span><span class="w"> </span><span class="n">zeroArrow</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">h</span></code> and <code class="language-hs highlight"><span class="nf">zeroArrow</span><span class="w"> </span><span class="o">&lt;+&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">h</span></code>.</p>
+<p>In WebGear, these type classes are used to implement routing. The <code class="language-hs highlight"><span class="nf">zeroArrow</span></code> is a handler that always fails,
+indicating a route mismatch so that other handlers can be tried. In case of <code class="language-hs highlight"><span class="nf">f</span><span class="w"> </span><span class="o">&lt;+&gt;</span><span class="w"> </span><span class="n">g</span></code>, the <code class="language-hs highlight"><span class="nf">f</span></code> handler is
+tried first to get a response. If that fails to match the route, the <code class="language-hs highlight"><span class="nf">g</span></code> handler will be tried next.</p>
+<h2 id="the-proc-notation">The proc Notation</h2>
+<p>The arrow combinators are cumbersome to program with in practice. For example, consider this code:</p>
+<div class="language-haskell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nf">squareA</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Arrow</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kt">Int</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nf">squareA</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">arr</span><span class="w"> </span><span class="p">(</span><span class="nf">\</span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="nf">pythagorasA</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Arrow</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="w"> </span><span class="kt">Int</span><span class="p">)</span><span class="w"> </span><span class="kt">Int</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nf">pythagorasA</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="p">(</span><span class="n">squareA</span><span class="w"> </span><span class="o">***</span><span class="w"> </span><span class="n">squareA</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">arr</span><span class="w"> </span><span class="p">(</span><span class="n">uncurry</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="p">))</span>
+</span></code></pre></div>
+<p>It isn't immediately obvious what <code class="language-hs highlight"><span class="nf">pythagorasA</span></code> is trying to do. It'll help if we had some notation to add extra
+variable names for intermediate values. That is where <code class="language-hs highlight"><span class="nf">proc</span></code> notation comes in. This syntax is enabled by the <code class="language-hs highlight"><span class="kt">Arrows</span></code> language extension. The above program can be written with proc notation as:</p>
+<div class="language-haskell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nf">squareA</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Arrow</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kt">Int</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nf">squareA</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">proc</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="n">returnA</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nf">pythagorasA</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Arrow</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="w"> </span><span class="kt">Int</span><span class="p">)</span><span class="w"> </span><span class="kt">Int</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="nf">pythagorasA</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">proc</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kr">do</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span><span class="n">xSquare</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">squareA</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="n">x</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span><span class="n">ySquare</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">squareA</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="n">y</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">  </span><span class="n">returnA</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="n">xSquare</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ySquare</span>
+</span></code></pre></div>
+<p>The proc notation is similar to the monadic do notation. The main difference is that an arrow has both an input and
+output components, unlike monad which only has one.</p>
+<p>The proc block starts with the <code class="language-hs highlight"><span class="nf">proc</span></code> keyword followed by a pattern representing the input to this arrow. For
+example, the <code class="language-hs highlight"><span class="nf">pythagorasA</span></code> arrow has <code class="language-hs highlight"><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span></code> as its input.</p>
+<p>The body of the arrow notation is called a command. There are a few possible ways to write a command. In the above code,
+<code class="language-hs highlight"><span class="nf">squareA</span></code> has a single command <code class="language-hs highlight"><span class="nf">returnA</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span></code> as its body. This means <code class="language-hs highlight"><span class="nf">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span></code> is sent as input to
+<code class="language-hs highlight"><span class="nf">returnA</span></code> and its output is the output of <code class="language-hs highlight"><span class="nf">squareA</span></code>. <code class="language-hs highlight"><span class="nf">returnA</span></code> is the identity arrow, so effectively
+<code class="language-hs highlight"><span class="nf">squareA</span></code> returns the square of its input.</p>
+<p>In general, this has the form <code class="language-hs highlight"><span class="nf">aexp</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="n">iexp</span></code> where <code class="language-hs highlight"><span class="nf">aexp</span></code> is an expression evaluating to an arrow and <code class="language-hs highlight"><span class="nf">iexp</span></code> is an expression evaluating to its input.</p>
+<p>More complex arrows - such as <code class="language-hs highlight"><span class="nf">pythagorasA</span></code> - use a do block. In the first line <code class="language-hs highlight"><span class="nf">xSquare</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">squareA</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="n">x</span></code>, the
+value <code class="language-hs highlight"><span class="nf">x</span></code> is input to the arrow <code class="language-hs highlight"><span class="nf">squareA</span></code> and the result is <code class="language-hs highlight"><span class="nf">xSquare</span></code>. The final line feeds <code class="language-hs highlight"><span class="nf">xSquare</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ySquare</span></code> to <code class="language-hs highlight"><span class="nf">returnA</span></code> which produces the result of <code class="language-hs highlight"><span class="nf">pythagorasA</span></code>.</p>
+<p>There are a few restrictions on what you can do with this notation. Firstly, the part to the left of <code class="language-hs highlight"><span class="ow">&lt;-</span></code> is a
+pattern just like the monadic do notation.</p>
+<p>Secondly, the expression between <code class="language-hs highlight"><span class="ow">&lt;-</span></code> and <code class="language-hs highlight"><span class="o">-&lt;</span></code> must be an arrow. This expression cannot use any of the
+variables bound in the proc notation. For example, the code below is invalid because the <code class="language-hs highlight"><span class="nf">x</span></code> is bound as a result
+in first line and is used as part of the arrow expression in second line.</p>
+<div class="language-haskell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nf">proc</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kr">do</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">foo</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="n">a</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="n">y</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">bar</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="n">a</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="o">....</span>
+</span></code></pre></div>
+<p>Arrows do not let you choose the next arrow to use based on some intermediate result from a previous arrow.(1) Bound
+variables such as <code class="language-hs highlight"><span class="nf">x</span></code> and <code class="language-hs highlight"><span class="nf">y</span></code> can only be used as an input to other arrows (i.e. on the right side of <code class="language-hs highlight"><span class="o">-&lt;</span></code>).  { .annotate }</p>
+<ol>
+<li><code class="language-hs highlight"><span class="kt">ArrowApply</span></code> type class allows this. But such arrows are equivalent to monads and you are better off using
+    monads in that case.</li>
+</ol>
+<p>The proc notation also supports <code class="language-hs highlight"><span class="kr">if</span></code> and <code class="language-hs highlight"><span class="kr">case</span></code> in commands. These require an instance of <code class="language-hs highlight"><span class="kt">ArrowChoice</span></code>:</p>
+<div class="language-haskell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nf">factorialA</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">ArrowChoice</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kt">Int</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nf">factorialA</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">proc</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">-&gt;</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="kr">if</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="kr">then</span><span class="w"> </span><span class="n">returnA</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="mi">1</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="kr">else</span><span class="w"> </span><span class="kr">do</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">      </span><span class="n">res</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">factorialA</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">      </span><span class="n">returnA</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">res</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="kr">data</span><span class="w"> </span><span class="kt">Result</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Found</span><span class="w"> </span><span class="p">[</span><span class="kt">Pet</span><span class="p">]</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">NotFound</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="nf">searchPets</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">ArrowChoice</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="kt">Name</span><span class="w"> </span><span class="kt">Result</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="nf">searchPets</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">proc</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kr">do</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">  </span><span class="n">pets</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">fetchPetsFromDB</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="n">name</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">  </span><span class="kr">case</span><span class="w"> </span><span class="n">pets</span><span class="w"> </span><span class="kr">of</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="w">    </span><span class="kt">[]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">returnA</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="kt">NotFound</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="w">    </span><span class="n">ps</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">returnA</span><span class="w"> </span><span class="o">-&lt;</span><span class="w"> </span><span class="kt">Found</span><span class="w"> </span><span class="n">ps</span>
+</span></code></pre></div>
+<h2 id="summary">Summary</h2>
+<p>Arrows can be used to build composable programs. You can compose many arrows in multiple ways to produce a resultant
+arrow, and then in the next step run that arrow. The clean separation between these two steps help WebGear to retain
+static information about APIs as well as run it as a server.</p>
+<p>See these resources for more information about arrows:</p>
+<ol>
+<li><a href="https://en.wikibooks.org/wiki/Haskell/Understanding_arrows">The Haskell wikibook</a> has a chapter on arrows.</li>
+<li>Haskell wiki has an <a href="https://wiki.haskell.org/Arrow_tutorial">arrow tutorial</a>.</li>
+<li>These two papers introduce arrows from first principles and are easy to read:</li>
+<li><a href="http://www.cse.chalmers.se/%7Erjmh/Papers/arrows.pdf">Generalising Monads to Arrows</a></li>
+<li><a href="http://www.cse.chalmers.se/%7Erjmh/afp-arrows.pdf">Programming with Arrows</a></li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../request-handling/api-documentation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: API Documentation">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                API Documentation
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../traits/" class="md-footer__link md-footer__link--next" aria-label="Next: Traits">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Traits
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      © 2024 Raghu Kaippully
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.code.copy", "content.code.select", "navigation.footer", "navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "toc.follow", "toc.integrate"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "stable", "provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.3220b9d7.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/js/fontawesome.min.js"></script>
+      
+    
+  </body>
+</html>
