@@ -2,7 +2,7 @@
 
 ## What is WebGear?
 WebGear is a high-performance framework to build composable, type-safe HTTP APIs. It is designed to make common API
-development tasks easy. It is also easily extensible to add components needed by your project.
+development tasks easy. WebGear is easily customizable to match the requirements of your project.
 
 ## Why use WebGear?
 If you are already familiar with other Haskell web frameworks, you might be interested in how WebGear compares against
@@ -43,7 +43,7 @@ components, automatic generation of OpenAPI documentation etc.
 
 ### Other Differences
 WebGear uses [arrows](https://www.haskell.org/arrows/) and monads to build APIs, while other frameworks only use
-monads. This means there is one additional thing to learn if you are not familiar with arrows. However, this cost is
-justified as arrows can express API specifications at value level instead of type level. Arrows and their `proc`
-notation can be learned relatively easily as a natural extension of monadic computation. This guide includes an [arrow
-tutorial](../reference/arrows-tutorial.md) to help you if you are unfamiliar with arrows.
+monads. This requires you to understand one additional concept of arrows; however, this cost is justified as arrows can
+express API specifications at value level instead of type level. Arrows and their `proc` notation can be learned
+relatively easily as a natural extension of monadic computation. If you are unfamiliar with arrows, you may want to go
+through the [arrows primer](../advanced/arrows-primer.md).

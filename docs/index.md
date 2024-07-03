@@ -15,4 +15,4 @@ comprehensive documentation and examples that shortens the learning curve.
 WebGear is very flexible, allowing you to build your project the way you want. It is very easy to extend or completely
 replace most of the components to make it work the way you need it to.
 
-Learn more about WebGear and how it compares against alternatives in the [user guide](user-guide/first-steps/introduction.md).
+Learn more about WebGear and how it compares against alternatives in the [tutorial](tutorial/first-steps/introduction.md).

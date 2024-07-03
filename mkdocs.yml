@@ -3,7 +3,7 @@ site_url: https://haskell-webgear.github.io/
 site_description: >-
   WebGear is a library to build composable, type-safe HTTP APIs in Haskell.
 site_author: Raghu Kaippully
-copyright: © 2023 Raghu Kaippully
+copyright: © 2024 Raghu Kaippully
 
 repo_url: https://github.com/haskell-webgear/webgear
 
@@ -64,22 +64,17 @@ extra:
 
 nav:
   - 'Home': index.md
-  - 'User Guide':
+  - 'Tutorial':
       - 'First Steps':
-          - 'Introduction': user-guide/first-steps/introduction.md
-          - 'Getting Started': user-guide/first-steps/getting-started.md
-          - 'Hello, World!': user-guide/first-steps/hello-world.md
-      - 'Architecture':
-          - 'Traits': user-guide/architecture/traits.md
-          - 'Handlers': user-guide/architecture/handlers.md
-          - 'Middlewares': user-guide/architecture/middlewares.md
-          - 'Routing': user-guide/architecture/routing.md
-      - 'Common Tasks':
-          - 'Handling Requests': user-guide/common-tasks/handling-requests.md
-          - 'Generating Responses': user-guide/common-tasks/generating-responses.md
-          - 'Authentication': user-guide/common-tasks/authentication.md
-      - 'Reference':
-          - 'Arrows Tutorial': user-guide/reference/arrows-tutorial.md
-          - 'Language Extensions': user-guide/reference/language-extensions.md
-          - 'Troubleshooting': user-guide/reference/troubleshooting.md
-  - Packages: packages.md
+          - 'Introduction': tutorial/first-steps/introduction.md
+          - 'Getting Started': tutorial/first-steps/getting-started.md
+      - 'Request Handling':
+          - 'Routing': tutorial/request-handling/routing.md
+          - 'Handlers and Middlewares': tutorial/request-handling/handlers-and-middlewares.md
+          - 'Request Traits': tutorial/request-handling/request-traits.md
+          - 'Generating Responses': tutorial/request-handling/generating-responses.md
+          - 'API Documentation': tutorial/request-handling/api-documentation.md
+      - 'Advanced':
+          - 'Arrows Primer': tutorial/advanced/arrows-primer.md
+          - 'Traits': tutorial/advanced/traits.md
+  - 'Packages': packages.md
