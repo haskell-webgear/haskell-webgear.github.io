@@ -18,7 +18,7 @@
           inherit system;
         };
 
-        python = pkgs.python311.withPackages (ps: [
+        python = pkgs.python3.withPackages (ps: [
           ps.mike
           ps.mkdocs-material
         ]);

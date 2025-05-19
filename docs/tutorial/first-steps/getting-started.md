@@ -1,7 +1,7 @@
 # Getting Started
 WebGear is a collection of Haskell packages and can be added to your Haskell project just like any other package.
 
-This version of WebGear supports GHC versions from `9.0` till `9.8`. WebGear supports both
+This version of WebGear supports GHC versions from `9.4` till `9.12`. WebGear supports both
 [Cabal](https://cabal.readthedocs.io/) and [Stack](https://haskellstack.org/). The rest of this guide contains
 instructions only for Cabal, but they can be adjusted easily for Stack.
 
@@ -32,15 +32,15 @@ default-extensions:
 
 build-depends:
     base,
-    http-api-data ==0.6,
+    http-api-data ==0.6.2,
     http-types ==0.12.4,
     openapi3 ==3.2.4,
     time,
     wai ==3.2.4,
-    warp ==3.4.1,
-    webgear-core ==1.3.0,
-    webgear-server ==1.3.0,
-    webgear-openapi ==1.3.0
+    warp ==3.4.7,
+    webgear-core ==1.4.0,
+    webgear-server ==1.4.0,
+    webgear-openapi ==1.4.0
 ```
 
 
@@ -88,8 +88,8 @@ And test it with:
 $ curl --dump-header - http://localhost:3000/hello
 HTTP/1.1 200 OK
 Transfer-Encoding: chunked
-Date: Wed, 15 May 2024 19:15:46 GMT
-Server: Warp/3.4.1
+Date: Wed, 15 May 2025 05:15:46 GMT
+Server: Warp/3.4.7
 Content-Type: text/plain
 
 Hello, World!

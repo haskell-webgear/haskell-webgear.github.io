@@ -3,7 +3,7 @@ site_url: https://haskell-webgear.github.io/
 site_description: >-
   WebGear is a library to build composable, type-safe HTTP APIs in Haskell.
 site_author: Raghu Kaippully
-copyright: © 2024 Raghu Kaippully
+copyright: © 2025 Raghu Kaippully
 
 repo_url: https://github.com/haskell-webgear/webgear
 
